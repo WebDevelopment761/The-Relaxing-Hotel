@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Relaxing Hotel</title>
+  <style>
+    :root{
+      --accent:#d94b48;
+      --dark:#184e4f;
+      --muted:#e6f0f0;
+      --card:#ffffff;
+      --text:#23333b;
+      --glass: rgba(255,255,255,0.85);
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#e9f0f2 0%, #dfeff1 100%);color:var(--text)}
+
+    /* NAV */
+    .navbar{display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:var(--glass);backdrop-filter:blur(6px);position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(0,0,0,0.04)}
+    .logo{font-weight:700;color:var(--dark);display:flex;gap:10px;align-items:center}
+    .logo:before{content:'';width:36px;height:18px;background:linear-gradient(90deg,var(--dark),#2b7a79);border-radius:6px}
+    nav a{margin:0 12px;color:#3e5660;text-decoration:none;padding:8px;border-radius:6px}
+    nav a:hover{background:rgba(0,0,0,0.03)}
+    .book-btn{background:var(--accent);color:#fff;padding:10px 16px;border-radius:18px;border:0;cursor:pointer}
+
+    /* HERO */
+    .hero{height:360px;background-image:url("Pre.png");background-size:cover;background-position:center;display:flex;align-items:center;position:relative}
+    .hero::after{content:'';position:absolute;left:0;right:0;top:0;height:360px;}
+    .hero-text{margin-left:6%;position:relative;z-index:1;color:#fff}
+    .hero-text h1{font-size:48px;margin:0;line-height:1.05;font-weight:800}
+
+    /* ROOMS */
+    .container{max-width:1150px;margin:40px auto;padding:0 20px}
+    .rooms-section h2{color:var(--dark);margin-bottom:18px}
+    .room-container{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+
+    .room-card{background:var(--card);border-radius:10px;overflow:hidden;box-shadow:0 6px 18px rgba(21,38,44,0.06);display:flex;flex-direction:column}
+    .room-card img{width:100%;height:200px;object-fit:cover}
+    .room-body{padding:16px;flex:1;display:flex;flex-direction:column}
+    .room-body h3{margin:6px 0 8px;font-size:20px}
+    .room-body p{font-size:14px;color:#6b7d82;flex:1}
+    .room-meta{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+    .price{font-weight:700}
+    .book-details{background:var(--accent);color:#fff;padding:10px 12px;border-radius:8px;border:0;cursor:pointer}
+
+    /* GALLERY */
+    .gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:30px}
+    .gallery img{width:100%;height:140px;object-fit:cover;border-radius:8px}
+
+    /* BOOKING MODAL */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:60}
+    .modal.active{display:flex}
+    .modal-card{width:420px;background:#fff;border-radius:12px;padding:18px}
+    .modal-card h3{margin:0 0 12px}
+    .form-row{display:flex;gap:8px}
+    .form-row input,.form-row select, .modal-card input, .modal-card textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e3e7e8}
+    .modal-actions{display:flex;justify-content:space-between;margin-top:12px}
+
+    /* FOOTER */
+    footer{margin-top:60px;background:#0f3b3b;color:#fff;padding:28px}
+    footer .foot-grid{display:flex;justify-content:space-between;max-width:1150px;margin:0 auto}
+
+    /* Responsive */
+    @media (max-width:980px){
+      .room-container{grid-template-columns:repeat(2,1fr)}
+      .hero{height:300px}
+      .hero-text h1{font-size:36px}
+    }
+    @media (max-width:640px){
+      .navbar{padding:12px}
+      nav{display:none}
+      .room-container{grid-template-columns:1fr}
+      .gallery{grid-template-columns:repeat(2,1fr)}
+      .hero{height:220px}
+      .hero-text h1{font-size:26px}
+      .container{padding:0 14px}
+      .modal-card{width:92%}
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">The Relaxing Hotel</div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#rooms">Rooms & Suites</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#amenities">Amenities</a>
+      <a href="#contact">Contact Us</a>
+    </nav>
+    <button class="book-btn" id="openBooking">Book Now</button>
+  </header>
+
+  <section class="hero" aria-label="hero banner">
+    <div class="hero-text">
+      <h1>Discover Your Perfect Room</h1>
+      <p style="color:rgba(255,255,255,0.9);margin-top:8px;font-size:15px;max-width:520px">Seaside luxury with modern comforts. Book your stay and enjoy world-class service.</p>
+    </div>
+  </section>
+
+  <main class="container">
+    <section id="rooms" class="rooms-section">
+      <h2>Discover Your Perfect Room</h2>
+
+      <div class="room-container">
+        <article class="room-card" data-name="Deluxe Sea View" data-price="230">
+          <img src="DeluxeSeaView.png" alt="Deluxe Sea View" />
+          <div class="room-body">
+            <h3>Deluxe Sea View</h3>
+            <p>Wake up to breathtaking ocean views and luxury comfort. King bed, balcony and ensuite bathroom.</p>
+            <div class="room-meta">
+              <span class="price">$230 / night</span>
+              <button class="book-details" data-room="Deluxe Sea View">View Details & Book</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="room-card" data-name="Premium Suite" data-price="400">
+          <img src="premium.avif" alt="Premium Suite" />
+          <div class="room-body">
+            <h3>Premium Suite</h3>
+            <p>A spacious suite with modern amenities, living area and scenic ocean views. Ideal for couples.</p>
+            <div class="room-meta">
+              <span class="price">$400 / night</span>
+              <button class="book-details" data-room="Premium Suite">View Details & Book</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="room-card" data-name="Family Room" data-price="310">
+          <img src="Family-Room.png" alt="Family Room" />
+          <div class="room-body">
+            <h3>Family Room</h3>
+            <p>Designed for families with extra space, two beds and kid-friendly amenities.</p>
+            <div class="room-meta">
+              <span class="price">$310 / night</span>
+              <button class="book-details" data-room="Family Room">View Details & Book</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div id="gallery" style="margin-top:28px">
+        <h3>Gallery</h3>
+        <div class="gallery">
+      </div>
+      </div>
+      <div style="width: 100%; overflow-x: auto; white-space: nowrap; text-align: center; padding: 10px 0;">
+  <img src="welcome1.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="welcome.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallerywelcome.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery1.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery2.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery3.avif" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery4.webp" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery5.avif" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery6.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery1.6.avif" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery7.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery8.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery9.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery10.jpeg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery11.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery12.avif" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery13.png" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery14.webp" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery15.avif" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery16.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery17.webp" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery18.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery19.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery20.jpeg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery21.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery22.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery23.jpeg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery24.jpg" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+  <img src="gallery25.avif" style="width: 30%; height: 200px; object-fit: cover; display: inline-block; margin: 0 10px; border-radius: 10px;">
+
+</div>
+    </section>
+
+    <section id="amenities" style="margin-top:36px;display:flex;gap:18px;align-items:center;justify-content:space-between">
+      <div style="flex:1">
+        <h3>Amenities</h3>
+        <ul style="color:#556f73">
+          <li>Free Wi-Fi, Pool, Spa, Gym, Parking</li>
+          <li>24/7 Room Service & Concierge</li>
+          <li>Complimentary breakfast</li>
+          <li>Paid Soft drink, Alcohol, Lunch, Dinner</li>
+          <li>Airport shuttle service</li>
+        </ul>
+      </div>
+      <div style="width:300px;text-align:right">
+        <p style="color:#45a1ba">Questions? Call <a href="tel:+917588921306">+91 7588921306</a></p>
+        
+        <button class="book-btn" id="openBooking2">Book a stay</button>
+      </div>
+    </section>
+  </main>
+
+  <footer style="background:#1f1f1f; color:white; padding:60px 5%; font-family:'Poppins', sans-serif;">
+
+  <div style="display:flex; justify-content:space-between; flex-wrap:wrap;">
+
+    <!-- Left Columns -->
+    <div style="display:flex; gap:80px; flex-wrap:wrap;">
+
+      <div>
+        <p style="font-size:22px; font-weight:600; margin-bottom:25px;">About Us</p>
+        <p style="margin:8px 0;">The Relaxing Magazine</p>
+        <p style="margin:8px 0;">Press Room</p>
+        <p style="margin:8px 0;">Gift Card</p>
+        <p style="margin:8px 0;">Connoisseur Club</p>
+      </div>
+
+      <div>
+        <p style="font-size:22px; font-weight:600; margin-bottom:25px;">Awards</p>
+        <p style="margin:8px 0;">Careers</p>
+        <p style="margin:8px 0;">Manage Reservations</p>
+        <p style="margin:8px 0;">Best Rate Guarantee</p>
+      </div>
+
+      <div>
+        <p style="font-size:22px; font-weight:600; margin-bottom:25px;">Sustainability</p>
+        <p style="margin:8px 0;">Travel Diaries</p>
+        <p style="margin:8px 0;">Loyalty</p>
+        <p style="margin:8px 0;">Contact Us</p>
+      </div>
+
+    </div>
+
+    <div style="background:#1d1d1d; color:white; padding:40px;">
+
+  <h2 style="font-size:28px; margin-bottom:10px;">Subscribe to Newsletter</h2>
+
+  <!-- Email + Subscribe Row -->
+  <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+      
+      <input id="newsletterEmail" type="email" placeholder="Enter your email"
+        style="padding:12px; width:250px; border:none; border-bottom:2px solid #eac46f; background:transparent; color:white;">
+
+      <button 
+        onclick="subscribeNow()" 
+        style="padding:12px 25px; background:#eac46f; border:none; font-weight:600; cursor:pointer;">
+        Subscribe
+      </button>
+  </div>
+
+  <script>
+    function subscribeNow() {
+      const email = document.getElementById('newsletterEmail').value;
+
+      if(email === "") {
+        alert("Please enter your email");
+      } else {
+        alert("Subscribed Successfully: " + email);
+      }
+    }
+  </script>
+
+  <!-- FOLLOW US SECTION -->
+  <h2 style="margin-top:40px; margin-bottom:10px; font-size:26px;">Follow Us</h2>
+
+  <div style="display:flex; gap:15px; font-size:40px;">
+      <span><a href="https://instagram.com/yourid" target="Instagram"><img src="instagram.png" width="40"></a></span>
+      <span><a href="https://facebook.com/yourid" target="_blank"><img src="Facebook.png" width="45"></a></span>
+      <span><a href="https://twitter.com/yourid" target="_blank"><img src="Twitter.png" width="45"></a></span>
+      <span><a href="https://linkedin.com/yourid" target="_blank"><img src="Linkedin.png" width="45"></a></span>
+  </div>
+</div>
+
+  <p style="color:#ccc; font-size:14px;">
+    Investors: The Relaxing Hotel (Equity) | Smartweb Solution (Debt) |
+    The Relaxing Hotel (Debt) | Investor & Grievance Queries
+  </p>
+
+  <hr style="border-color:#444; margin:20px 0;">
+
+  <div style="display:flex; gap:25px; flex-wrap:wrap; color:#ccc; font-size:14px;">
+    <span>©2025 The Relaxing Hotel. All Rights Reserved.</span>
+    <span>Privacy Policy</span>
+    <span>Legal</span>
+    <span>Terms & Conditions</span>
+    <span>Change Cookie Preferences</span>
+    <span>Security Alert</span>
+  </div>
+
+</footer>
+
+  <!-- Booking Modal -->
+  <div class="modal" id="bookingModal" role="dialog" aria-hidden="true">
+    <div class="modal-card" role="document">
+      <h3>Book Your Room</h3>
+      <form id="bookingForm">
+        <label style="font-size:13px">Room</label>
+        <input type="text" id="roomName" name="roomName" readonly />
+
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <div style="flex:1">
+            <label style="font-size:13px">Check-in</label>
+            <input type="date" id="checkin" name="checkin" required />
+          </div>
+          <div style="flex:1">
+            <label style="font-size:13px">Check-out</label>
+            <input type="date" id="checkout" name="checkout" required />
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:10px">
+          <input type="number" id="guests" name="guests" placeholder="Guests" min="1" value="1" required />
+          <input type="email" id="email" name="email" placeholder="Email" required />
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="cancelBtn" style="background:#e6eef0;border:0;padding:10px;border-radius:8px">Cancel</button>
+          <button type="submit" class="book-btn">Confirm Booking</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Open modal when booking buttons clicked
+    const bookingModal = document.getElementById('bookingModal');
+    const openBtns = document.querySelectorAll('#openBooking, #openBooking2');
+    const roomButtons = document.querySelectorAll('.book-details');
+    const roomNameInput = document.getElementById('roomName');
+
+    openBtns.forEach(b=>b.addEventListener('click', ()=>{ roomNameInput.value='Deluxe Sea View'; bookingModal.classList.add('active'); bookingModal.setAttribute('aria-hidden','false'); }));
+    roomButtons.forEach(btn=>btn.addEventListener('click', e=>{
+      const parent = e.target.closest('.room-card');
+      const name = parent?.dataset?.name || e.target.dataset.room || 'Room';
+      roomNameInput.value = name;
+      bookingModal.classList.add('active'); bookingModal.setAttribute('aria-hidden','false');
+    }));
+
+    // Close
+    document.getElementById('cancelBtn').addEventListener('click', ()=>{ bookingModal.classList.remove('active'); bookingModal.setAttribute('aria-hidden','true'); });
+    bookingModal.addEventListener('click', e=>{ if(e.target === bookingModal){ bookingModal.classList.remove('active'); bookingModal.setAttribute('aria-hidden','true'); } });
+
+    // Booking form validation and demo submit
+    document.getElementById('bookingForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const checkin = new Date(document.getElementById('checkin').value);
+      const checkout = new Date(document.getElementById('checkout').value);
+      if(isNaN(checkin) || isNaN(checkout)){ alert('Please select valid dates'); return; }
+      if(checkout <= checkin){ alert('Check-out must be after check-in'); return; }
+      // Demo confirmation (in real app send to server)
+      const name = roomNameInput.value;
+      const guests = document.getElementById('guests').value;
+      const email = document.getElementById('email').value;
+      alert(`Booking confirmed for ${name} (${guests} guest(s)). A confirmation will be sent to ${email}.`);
+      bookingModal.classList.remove('active'); bookingModal.setAttribute('aria-hidden','true');
+      this.reset();
+    });
+
+    // Keyboard accessibility: Esc to close
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ bookingModal.classList.remove('active'); bookingModal.setAttribute('aria-hidden','true'); } });
+  </script>
+</body>
+</html>
